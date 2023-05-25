@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/base.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <section class="page">
+    <section class="screen">
+
+      <strong>QUIZ MARK</strong>
+
+      <p class="score_box" data-score="80">
+        <span>80.00%</span> 
+      </p>
+    </section>
+  </section>
+</body>
+
+</html>
+
+
+<script>
+  var rootElement = document.documentElement;
+
+  const score_box = document.querySelector('.score_box')
+  var score = score_box.dataset.score
+  if (score > 40 && score < 70) {
+    rootElement.style.setProperty('--var-score_box', `#f2b75e`);
+  } else if (score > 70) {
+    rootElement.style.setProperty('--var-score_box', `#1be685`);
+  }else{
+    rootElement.style.setProperty('--var-score_box', `#ee4747`);
+  }
+
+
+</script>
+
+<style>
+  :root {
+    --var-score_box: wheat;
+  }
+
+  .page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .screen {
+    width: 1200px;
+    height: 650px;
+    border: 1px solid red;
+    position: relative;
+    /* background: salmon; */
+  }
+
+  .score_box {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    right: -60px;
+    top: -60px;
+    /* background: #24282e; */
+    display: flex;
+    font-size: 1.5rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 50%;
+    background: radial-gradient(circle at bottom, transparent 8px, var(--var-score_box) 0);
+  }
+</style>

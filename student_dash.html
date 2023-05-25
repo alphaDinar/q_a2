@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,300,0,0" />
+  <link rel="stylesheet" href="css/base.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <section class="page">
+    <section class="sideBar">
+      <button id="sideBar_tag" class="material-symbols-outlined">linear_scale</button>
+      <header>
+        <div style="background-image: url(images/bag.jpeg);"></div>
+        <span>Ares</span>
+        <hr>
+      </header>
+      <nav>
+        <a href=""><i class="material-symbols-outlined">shield_person</i> <span>Panel</span> </a>
+        <a href=""><i class="material-symbols-outlined">wallpaper_slideshow</i> <span>Slides</span></a>
+        <a href=""><i class="material-symbols-outlined">psychology_alt</i> <span>Quizes</span></a>
+        <a href=""><i class="material-symbols-outlined">pie_chart</i> <span>Assesment</span></a>
+      </nav>
+      <footer>
+        <hr>
+        <i class="material-symbols-outlined">power_settings_new</i>
+      </footer>
+    </section>
+    <section class="main">
+      <section class="main_top">
+        <div class="assignment_box">
+          <i class="material-symbols-outlined">assignment</i>
+          <p>current Assignment</p>
+          <span>English Assignment</span>
+          <small>3 days left</small>
+          <p class="material-symbols-outlined">east</p>
+        </div>
+        <style>
+          .assignment_box {
+            width: 300px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            border-radius: 10px;
+            background: #2a2a46;
+            color: skyblue;
+            border: 1px solid black;
+          }
+
+          .assignment_box i {
+            font-size: 2rem;
+          }
+
+          .assignment_box span {
+            font-size: 1.5rem;
+          }
+        </style>
+        <div class="avg_box" data-avg="86">
+          <span>86%</span>
+          <small>Semester Average</small>
+        </div>
+        <div class="assignment_box">
+          <i class="material-symbols-outlined">assignment</i>
+          <p>Last Assignment</p>
+          <span>English Assignment</span>
+          <small>3 days ago</small>
+          <p class="material-symbols-outlined">east</p>
+        </div>
+      </section>
+
+      <style>
+        :root {
+          --avg_box_bg: black;
+        }
+
+        .progress_chart {
+          width: 500px;
+          height: 300px;
+        }
+
+        .avg_box {
+          width: 230px;
+          height: 200px;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: var(--avg_box_bg);
+          color: white;
+          gap: 1rem;
+        }
+
+        .avg_box span {
+          font-size: 2.4rem;
+          font-weight: 600;
+        }
+      </style>
+      <script>
+        const rootElement = document.documentElement
+        const avg_box = document.querySelector('.avg_box')
+        console.log(avg_box.dataset.avg)
+
+        if (avg_box.dataset.avg > 70) {
+          rootElement.style.setProperty('--avg_box_bg', 'rgb(13, 220, 116)')
+        } else if (avg_box.dataset > 40 && avg_box.dataset < 70) {
+          rootElement.style.setProperty('--avg_box_bg', 'orange')
+        } else {
+          rootElement.style.setProperty('--avg_box_bg', 'salmon')
+        }
+
+      </script>
+      <hr>
+      <section class="main_low">
+        <div class="progress_chart">
+          <canvas id="myChart"></canvas>
+        </div>
+        <section class="history_box">
+          <a class="box" data-mark="83">
+            <span>83%</span>
+            <small>a weeks ago</small>
+          </a>
+          <a class="box" data-mark="68">
+            <span>68%</span>
+            <small>2 weeks ago</small>
+          </a>
+          <a class="box" data-mark="74">
+            <span>74%</span>
+            <small>3 weeks ago</small>
+          </a>
+          <a class="material-symbols-outlined more_history" href="">east</a>
+        </section>
+
+      </section>
+
+
+
+
+      <style>
+        .main_top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+
+        .main_low {
+          flex-wrap: wrap;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .history_box {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .history_box .more_history {
+          font-size: 2rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .history_box .box {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          width: 150px;
+          height: 150px;
+          flex-direction: column;
+          border-radius: 10px;
+        }
+
+        .history_box .box span {
+          font-size: 2rem;
+          font-weight: 600;
+        }
+
+        .history_box .box.great {
+          /* rgb(13, 220, 116) */
+          background: linear-gradient(135deg, transparent 20px, rgb(13, 220, 116) 0);
+        }
+
+        .history_box .box.pass {
+          background: linear-gradient(135deg, transparent 20px, orange 0);
+        }
+
+        .history_box .box.fail {
+          background: linear-gradient(135deg, transparent 20px, salmon 0);
+        }
+
+
+        .history_box div span {
+          font-size: 2rem;
+        }
+      </style>
+
+      <script>
+        const mark_box = document.querySelectorAll('.history_box .box')
+        mark_box.forEach(box => {
+          console.log(box.dataset.mark > 70)
+          if (box.dataset.mark > 40 && box.dataset.mark < 70) {
+            box.classList.add('pass')
+          } else if (box.dataset.mark > 70) {
+            box.classList.add('great')
+          } else {
+            box.classList.add('fail')
+          }
+        }) 
+      </script>
+
+    </section>
+  </section>
+</body>
+
+</html>
+<style>
+  .sideBar {
+    width: 18%;
+    padding: 5vh 1%;
+    height: 90vh;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    top: 0;
+    z-index: 50;
+  background: white;
+    left: 0;
+    /* overflow-y: auto; */
+  }
+
+  .sideBar button {
+    top: 0;
+    right: 0;
+    background: #24282e;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 0 0 0 10px;
+    position: absolute;
+  }
+
+  .sideBar hr {
+    width: 100%;
+    border-top: 2px dotted darkgray;
+  }
+
+  .sideBar header,
+  .sideBar nav,
+  .sideBar footer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sideBar header,
+  .sideBar footer {
+    width: 100%;
+    align-items: center;
+  }
+
+  .sideBar header {
+    gap: 1rem;
+  }
+
+  .sideBar header div {
+    width: 150px;
+    height: 150px;
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+  }
+
+  .sideBar header span {
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+
+  .sideBar nav,
+  .sideBar footer {
+    gap: 0.5rem;
+  }
+
+  .sideBar nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgb(54, 54, 54);
+    font-size: 1.1rem;
+  }
+</style>
+
+<style>
+  .page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .main {
+    width: 70%;
+    padding: 10vh 5%;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid darkgray;
+    overflow-y: auto;
+  }
+
+  .main hr {
+    width: 100%;
+    border-top: 2px dotted darkgray;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'March', 'April', 'May', 'June'],
+      datasets: [{
+        label: 'Progress',
+        data: [4, 6, 8, 6, 15, 9],
+        borderWidth: 3
+      }]
+    },
+  });
+</script>
+
+<script>
+  const sideBar = document.querySelector('.sideBar')
+  const main = document.querySelector('.main')
+  const sideBar_tag = document.querySelector('.sideBar button')
+
+  sideBar_tag.onclick = () => {
+    sideBar.classList.toggle('change')
+    main.classList.toggle('change')
+  }
+</script>
+
+
+<style>
+  .sideBar,.main{
+    transition: 0.4s ease;
+  }
+  .sideBar.change {
+    width: 3%;
+    justify-content: center;
+    gap: 30%;
+  }
+
+  .sideBar.change header{
+    display: none;
+  }
+
+  .sideBar.change nav a span,
+  .sideBar.change footer a span {
+    display: none;
+  }
+
+  .main.change {
+    width: 95%;
+  }
+  @media all and (max-width:1300px) {
+
+.sideBar,
+.sideBar.change {
+  z-index: 10;
+  width: 230px;
+  padding: 5vh 10px; 
+  gap: revert;
+  justify-content: space-between;
+  display: flex;
+}
+.sideBar,.sideBar.change header{
+  display: flex;
+}
+
+.sideBar {
+  left: -250px;
+}
+
+.sideBar.change {
+  left: 0;
+}
+
+.sideBar.change nav a span,
+.sideBar.change footer a span,
+.sideBar.change header strong {
+  display: flex;
+}
+
+.sideBar button {
+  left: 100%;
+  width: 40px;
+  height: 40px;
+  border-radius: 0 0 10px 0;
+  background: black;
+}
+
+.main {
+  width: 100%;
+}
+
+.main.change {
+  width: 100%;
+}
+}
+
+
+@media all and (max-width:1140px) {
+  .page{
+    justify-content: flex-start;
+    min-height: auto;
+    height: auto;
+  }
+  .main{
+    min-height: auto;
+    height: auto;
+    padding: 3vh 10%;
+    gap: 2rem;
+  }
+  .main_top, .main_low{
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    align-items: center;
+  }
+}
+@media all and (max-width:700px) {
+  .history_box{
+    flex-direction: column;
+    align-items: center;
+  }
+  .progress_chart{
+    width: 100%;
+    height: 200px;
+  }
+  .main_top div{
+    max-width: 100%;
+    text-align: center;
+  }
+}
+</style>

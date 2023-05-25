@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,300,0,0" />
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/dash.css">
+  <link rel="stylesheet" href="css/q_a.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <section class="page">
+    <section class="sideBar">
+      <nav>
+        <span id="add_question">+</span>
+        <select id="question_mode">
+          <option value="mcq">MCQ</option>
+          <option value="steps">Steps</option>
+          <option value="fill_in">Fill In</option>
+        </select>
+      </nav>  
+
+      <p class="material-symbols-outlined" onclick="sessionStorage.clear()">delete</p>
+
+      <p onclick="saveQuiz()">Save Changes</p>
+
+
+      <button id="sideBar_tag">+</button>
+    </section>
+    <section class="main">
+      <section class="page_box">
+      </section>
+      <form class="quiz_box swiper">
+        <div class="swiper-wrapper">
+
+        </div>
+      </form>
+      <nav class="quiz_box_nav">
+        <i class="material-symbols-outlined quiz_box_prev">chevron_left</i>
+        <i class="material-symbols-outlined quiz_box_next">chevron_right</i>
+      </nav>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+        integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+      <script>
+        const quiz_wrapper = document.querySelector('.quiz_box .swiper-wrapper')
+        const page_box = document.querySelector('.page_box')
+
+        const add_question = document.getElementById('add_question')
+        const question_mode = document.getElementById('question_mode')
+
+
+
+        prefix_1 = (i, question) => {
+          console.log(question)
+          var slide_sheet = document.createElement('div')
+          slide_sheet.classList.add('swiper-slide')
+          slide_sheet.classList.add('question_slide')
+
+          var question_tag = document.createElement('span')
+          question_tag.classList.add('question_tag')
+          question_tag.innerHTML = `Question ${i}`
+          slide_sheet.appendChild(question_tag)
+          var question_box = document.createElement('textarea')
+          question_box.placeholder = `Q${i}`
+          question_box.required = true
+          if (question) {
+            question_box.value = question
+          }
+          question_box.classList.add('question_box')
+          slide_sheet.appendChild(question_box)
+          quiz_wrapper.appendChild(slide_sheet)
+
+          return slide_sheet
+        }
+
+
+        // generate mcq's 
+        generateMcq = (i, question, answers, cor_ans) => {
+          var slide_sheet = prefix_1(i, question)
+          slide_sheet.id = 'mcq_mode'
+
+          var answer_box = document.createElement('div')
+          answer_box.classList.add('answer_box')
+          let answer_tags = ['A', 'B', 'C', 'D']
+          for (var ii = 0; ii < 4; ii++) {
+            var answer = document.createElement('div')
+            answer.classList.add('answer')
+            answer_box.appendChild(answer)
+            var answer_tag = document.createElement('small')
+            answer_tag.innerHTML = answer_tags[ii]
+            answer.appendChild(answer_tag)
+            var answer_text = document.createElement('textarea')
+            if (ii < 2) {
+              answer_text.required = true
+            }
+            if (answers) {
+              if (answers[ii]) {
+                answer_text.value = answers[ii]
+              }
+            }
+            // answer_text.name
+            answer.appendChild(answer_text)
+            var answer_label = document.createElement('label')
+            answer.appendChild(answer_label)
+            var answer_radio = document.createElement('input')
+            answer_radio.type = 'radio'
+            if (answer_text.value === cor_ans) {
+              answer_radio.checked = true
+            }
+            answer_radio.name = `ar${i}`
+            answer_label.appendChild(answer_radio)
+            var ans_rad = document.createElement('small')
+            ans_rad.classList.add('ans_rad')
+            ans_rad.classList.add('material-symbols-outlined')
+            ans_rad.innerHTML = 'verified'
+            answer_label.appendChild(ans_rad)
+          }
+          slide_sheet.appendChild(answer_box)
+
+        }
+        // end of generate mcq's
+
+        // generate fill_in
+        generateFill_in = (i) => {
+          var slide_sheet = document.createElement('div')
+          slide_sheet.classList.add('swiper-slide')
+          slide_sheet.classList.add('question_slide')
+          slide_sheet.id = 'fill_in_mode'
+          var question_tag = document.createElement('span')
+          question_tag.classList.add('question_tag')
+          question_tag.innerHTML = `Question ${i}`
+          slide_sheet.appendChild(question_tag)
+          var fill_in_box = document.createElement('div')
+          fill_in_box.classList.add('fill_in_box')
+          slide_sheet.appendChild(fill_in_box)
+
+          var addFill_button = document.createElement('button')
+          addFill_button.innerHTML = '+'
+          addFill_button.type = 'button'
+          slide_sheet.appendChild(addFill_button)
+
+          quiz_wrapper.appendChild(slide_sheet)
+          return fill_in_box
+        }
+
+        fill_in_add = (fill_in_box, counter, mini_q, mini_a, width) => {
+          var fill_in = document.createElement('p')
+          fill_in.classList.add('fill_in')
+          fill_in_box.appendChild(fill_in)
+          var fill_in_tag = document.createElement('span')
+          fill_in_tag.innerHTML = counter
+          fill_in.appendChild(fill_in_tag)
+          var new_textarea = document.createElement('textarea')
+          new_textarea.placeholder = `blank ${counter}`
+          new_textarea.required = true
+
+          if (mini_q) {
+            new_textarea.value = mini_q
+            new_textarea.style.width = `${width}px`
+          }
+          fill_in.appendChild(new_textarea)
+          var new_input = document.createElement('input')
+          new_input.placeholder = `ans ${counter}`
+          new_input.required = true
+          if (mini_a) {
+            new_input.value = mini_a
+          }
+          fill_in.appendChild(new_input)
+          var fill_in_del = document.createElement('small')
+          fill_in_del.classList.add('material-symbols-outlined')
+          fill_in_del.innerHTML = 'delete'
+          fill_in.appendChild(fill_in_del)
+        }
+
+        handleFill_in = () => {
+          const fill_in_boxes = document.querySelectorAll('.fill_in_box')
+          const addFill_button = document.querySelectorAll('.swiper-slide button')
+
+          fill_in_boxes.forEach((fill_in_box, i) => {
+            addFill_button[i].onclick = () => {
+              var counter = fill_in_box.children.length + 1
+              fill_in_add(fill_in_box, counter)
+              delFill_ins()
+              triggerSave()
+            }
+          })
+
+        }
+
+        delFill_ins = () => {
+          document.querySelectorAll('.fill_in_box').forEach(fill_in_box => {
+            [...fill_in_box.children].forEach((el, i) => {
+              el.children[3].onclick = () => {
+                el.remove();
+                saveQuiz();
+                [...fill_in_box.children].forEach((mini_el, ii) => {
+                  var counter = parseInt(ii + 1)
+                  mini_el.children[0].innerHTML = counter
+                  mini_el.children[1].placeholder = `blank ${counter}`
+                  mini_el.children[2].placeholder = `ans ${counter}`
+                })
+              }
+            })
+          })
+        }
+        //end of generate fill_in
+
+        // generate steps
+        let step_tags = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        generateSteps = (i, question, answers, cor_ans) => {
+          var slide_sheet = prefix_1(i, question)
+          slide_sheet.id = 'steps_mode'
+
+          var step_box = document.createElement('div')
+          step_box.classList.add('step_box')
+          step_box.classList.add('material-symbols-outlined')
+          step_box.innerHTML = 'list'
+          slide_sheet.appendChild(step_box)
+          if (cor_ans) {
+            cor_ans.split('').forEach(ans => {
+              var box = document.createElement('div')
+              box.classList.add('box')
+              box.innerHTML = step_tags[ans]
+              step_box.appendChild(box)
+
+            })
+          }
+
+          var answer_box = document.createElement('div')
+          answer_box.classList.add('answer_box')
+
+          genQ = (ii) => {
+            var answer = document.createElement('div')
+            answer.classList.add('answer')
+            answer_box.appendChild(answer)
+            var answer_tag = document.createElement('small')
+            answer_tag.innerHTML = step_tags[ii]
+            answer.appendChild(answer_tag)
+            var answer_text = document.createElement('textarea')
+            answer_text.required = true
+            if (answers) {
+              if (answers[ii]) {
+                answer_text.value = answers[ii]
+              }
+            }
+            answer.appendChild(answer_text)
+            var answer_label = document.createElement('label')
+            answer.appendChild(answer_label)
+            var answer_checkbox = document.createElement('input')
+            answer_checkbox.type = 'checkbox'
+            answer_checkbox.name = step_tags[ii]
+
+            if (cor_ans) {
+              cor_ans.split('').forEach(ans => {
+                if (answer_checkbox.name === step_tags[ans]) {
+                  answer_checkbox.checked = true
+                }
+              })
+            }
+
+            answer_label.appendChild(answer_checkbox)
+            var ans_check = document.createElement('div')
+            ans_check.classList.add('ans_check')
+            answer_label.appendChild(ans_check)
+            var ans_check_i = document.createElement('i')
+            ans_check_i.classList.add('material-symbols-outlined')
+            ans_check_i.innerHTML = 'step_out'
+            ans_check.appendChild(ans_check_i)
+          }
+          if (answers) {
+            for (var ii = 0; ii < answers.length; ii++) {
+              genQ(ii)
+            }
+          } else {
+            for (var ii = 0; ii < 3; ii++) {
+              genQ(ii)
+            }
+          }
+
+          slide_sheet.appendChild(answer_box)
+          var step_nav = document.createElement('nav')
+          step_nav.classList.add('step_nav')
+          slide_sheet.appendChild(step_nav)
+          var step_nav_add = document.createElement('button')
+          step_nav_add.type = 'button'
+          step_nav_add.innerHTML = '+'
+          step_nav.appendChild(step_nav_add)
+          var step_nav_rem = document.createElement('button')
+          step_nav_rem.type = 'button'
+          step_nav_rem.innerHTML = '-'
+          step_nav.appendChild(step_nav_rem)
+          var clear_ans = document.createElement('span')
+          clear_ans.innerHTML = 'clear'
+          slide_sheet.appendChild(clear_ans)
+
+          fixSteps()
+          runHandleSteps()
+        }
+
+        // fix steps into stepbox
+        fixSteps = () => {
+          const step_questions = document.querySelectorAll('[id="steps_mode"]')
+          step_questions.forEach(question => {
+            var step_box = question.children[2];
+            [...question.children[3].children].forEach((answer, i) => {
+              var q_check = answer.children[2].children[0]
+              q_check.onchange = () => {
+                if (q_check.checked) {
+                  var box = document.createElement('div')
+                  box.classList.add('box')
+                  box.id = step_tags[i]
+                  box.dataset.index = i
+                  box.innerHTML = step_tags[i]
+                  // answer.children[2].children[1].innerHTML = step_box.children.length + 1
+                  anime({
+                    targets: box,
+                    translateY: [30, 0],
+                    opacity: [0, 1],
+                    duration: 800
+                  })
+                  step_box.appendChild(box)
+                } else {
+                  [...step_box.children].forEach((box, ii) => {
+                    if (box.id === step_tags[i]) {
+                      anime({
+                        targets: box,
+                        translateY: [0, 30],
+                        opacity: [1, 0],
+                        duration: 400,
+                        complete: () => {
+                          box.remove()
+                        }
+                      })
+                    }
+                  })
+                }
+                // saveQuiz()
+              }
+            })
+            question.children[5].onclick = () => {
+              step_box.innerHTML = '';
+              step_box.innerHTML = 'list';
+              [...question.children[3].children].forEach((answer, i) => {
+                var q_check = answer.children[2].children[0]
+                q_check.checked = false
+              })
+            }
+          })
+        }
+        // end of fix steps
+
+        //add answer field to steps question
+        handleSteps = (step_questions, answer_box) => {
+          step_questions.forEach((question, i) => {
+            if ([...question.children[3].children].length < 8) {
+              var answer = document.createElement('div')
+              answer.classList.add('answer')
+              var answer_tag = document.createElement('small')
+              answer_tag.innerHTML = step_tags[[...question.children[3].children].length]
+              answer.appendChild(answer_tag)
+              var answer_text = document.createElement('textarea')
+              answer.appendChild(answer_text)
+              var answer_label = document.createElement('label')
+              answer.appendChild(answer_label)
+              var ans_checkbox = document.createElement('input')
+              ans_checkbox.type = 'checkbox'
+              ans_checkbox.required = true
+              answer_label.appendChild(ans_checkbox)
+              var ans_check = document.createElement('div')
+              ans_check.classList.add('ans_check')
+              answer_label.appendChild(ans_check)
+              answer_box[i].appendChild(answer)
+              var ans_check_i = document.createElement('i')
+              ans_check_i.classList.add('material-symbols-outlined')
+              ans_check_i.innerHTML = 'step_out'
+              ans_check.appendChild(ans_check_i)
+            }
+            fixSteps()
+
+          })
+        }
+
+        runHandleSteps = () => {
+          const step_questions = document.querySelectorAll('#steps_mode')
+          const answer_box = document.querySelectorAll('#steps_mode .answer_box')
+
+          step_questions.forEach((question, i) => {
+            question.children[4].children[0].onclick = () => {
+              handleSteps(step_questions, answer_box)
+              triggerSave()
+            }
+            question.children[4].children[1].onclick = () => {
+              if ([...question.children[3].children].length > 3) {
+                answer_box[i].children[answer_box[i].children.length - 1].remove()
+                saveQuiz()
+              }
+            }
+          })
+        }
+        // end handle steps
+
+
+        makeQuizSwiper = () => {
+          var quiz_swiper = new Swiper('.quiz_box', {
+            loop: false,
+            speed: 700,
+            allowTouchMove: false,
+            navigation: {
+              nextEl: '.quiz_box_next',
+              prevEl: '.quiz_box_prev',
+            },
+          });
+
+          const page_spans = document.querySelectorAll('.page_box span')
+          page_spans.forEach((el, i) => {
+            el.onclick = () => {
+              quiz_swiper.slideTo(i)
+            }
+          })
+        }
+
+        createPagination = (counter) => {
+          var page_span = document.createElement('span')
+          page_span.innerHTML = counter
+          page_box.appendChild(page_span)
+        }
+
+        saveQuiz = () => {
+          let quiz_box = []
+          document.querySelectorAll('.question_slide').forEach((question_slide, i) => {
+            if (question_slide.id === 'mcq_mode') {
+              let answer_pack = [];
+              var cor_ans
+              [...question_slide.children[2].children].forEach(answer => {
+                if (answer.children[1].value) {
+                  answer_pack.push(answer.children[1].value)
+                }
+                if (answer.children[2].children[0].checked) {
+                  cor_ans = answer.children[1].value
+                }
+              })
+              quiz_box.push({
+                counter: i,
+                type: 'mcq_mode',
+                question: question_slide.children[1].value,
+                answers: answer_pack,
+                cor_ans: cor_ans
+              })
+            } else if (question_slide.id === 'steps_mode') {
+              let answer_pack = [];
+              [...question_slide.children[3].children].forEach(el => {
+                answer_pack.push(el.children[1].value)
+              });
+
+              cor_ans = '';
+              [...question_slide.children[2].children].forEach(el => {
+                if (el.dataset.index) {
+                  cor_ans = cor_ans + `${el.dataset.index}`
+                }
+              })
+              quiz_box.push({
+                counter: i,
+                type: 'steps_mode',
+                question: question_slide.children[1].value,
+                answers: answer_pack,
+                cor_ans: cor_ans
+              })
+            }
+            else if (question_slide.id === 'fill_in_mode') {
+              let question_list = [];
+              let answer_list = [];
+              let width_list = [];
+              [...question_slide.children[1].children].forEach(mini_q => {
+                question_list.push(mini_q.children[1].value)
+                answer_list.push(mini_q.children[2].value)
+                width_list.push(mini_q.children[1].scrollWidth)
+              })
+              quiz_box.push({
+                counter: i,
+                type: 'fill_in_mode',
+                question_list: question_list,
+                answer_list: answer_list,
+                width_list: width_list
+              })
+            }
+          })
+          sessionStorage.setItem('quiz_box', JSON.stringify(quiz_box))
+        }
+
+
+        triggerSave = () => {
+          //union of inputs and texareas to trigger autosave oninput
+          const savetriggers = [...new Set([...document.querySelectorAll('.quiz_box textarea')].concat([...document.querySelectorAll('.quiz_box input')]))]
+
+          savetriggers.forEach(trigger => {
+            trigger.oninput = () => {
+              saveQuiz()
+            }
+          })
+        }
+
+        //add questions mcq / steps / fill in
+        add_question.onclick = () => {
+          var counter = document.querySelectorAll('.question_slide').length + 1
+          if (question_mode.value === 'mcq') {
+            generateMcq(counter)
+          } else if (question_mode.value === 'steps') {
+            generateSteps(counter)
+          } else if (question_mode.value === 'fill_in') {
+            fill_in_add(generateFill_in(counter), 1)
+            handleFill_in()
+            delFill_ins()
+          }
+          createPagination(counter)
+          makeQuizSwiper()
+          triggerSave()
+        }
+        // end questions mcq / steps / fill in
+
+
+        // restoreQuizStateFrom Localstorage temp, or db permanent
+        restoreQuizState = () => {
+          JSON.parse(sessionStorage.getItem('quiz_box')).forEach(question_box => {
+            var counter = question_box.counter + 1
+            if (question_box.type === 'mcq_mode') {
+              generateMcq(counter, question_box.question, question_box.answers, question_box.cor_ans)
+            } else if (question_box.type === 'steps_mode') {
+              generateSteps(counter, question_box.question, question_box.answers, question_box.cor_ans)
+              console.log(question_box)
+            }
+            else if (question_box.type === 'fill_in_mode') {
+              var fill_in_box = generateFill_in(counter)
+              question_box.question_list.forEach((mini_q, ii) => {
+                fill_in_add(fill_in_box, parseInt(ii + 1), mini_q, question_box.answer_list[ii], question_box.width_list[ii])
+              })
+            }
+            createPagination(counter)
+          })
+          handleFill_in()
+          delFill_ins()
+          makeQuizSwiper()
+          triggerSave()
+        }
+        restoreQuizState()
+
+
+
+
+      </script>
+    </section>
+  </section>
+</body>
+
+</html>
+
+<script src="js/scheme.js"></script>
+
+<style>
+  .fill_in span,
+  .fill_in small {
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    color: white;
+    border: 1px solid darkgray;
+  }
+
+  .fill_in span {
+    background: rgb(31, 183, 243);
+  }
+
+  .fill_in small {
+    color: salmon;
+  }
+
+  .fill_in {
+    display: flex;
+    gap: 0 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .swiper-slide .fill_in_box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 95%;
+    gap: 2rem;
+  }
+
+  .fill_in_box input,
+  .fill_in_box textarea {
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    max-width: 99%;
+    width: 200px;
+    max-width: 100%;
+    padding: 5px;
+    resize: both;
+  }
+
+  .fill_in_box textarea {
+    overflow: hidden;
+    /* min-width: auto !important; */
+  }
+
+  .fill_in_box input {
+    border: 1px solid darkgray;
+  }
+
+  .fill_in_box textarea {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    border-bottom: 2px solid black;
+  }
+
+  #fill_in_mode {
+    background: white;
+  }
+</style>
